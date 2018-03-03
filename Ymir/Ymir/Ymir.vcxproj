@@ -76,15 +76,15 @@
     <IncludePath>F:\Projects\Ymir\shared\SDL2\include;F:\Projects\Ymir\shared\glew-2.1.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>F:\Projects\Ymir\shared\SDL2\include;F:\Projects\Ymir\shared\glew-2.1.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>F:\Projects\Ymir\shared\glew-2.1.0\lib\Release\x64;F:\Projects\Ymir\shared\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
-    <ExcludePath>F:\Projects\Ymir\shared\glew-2.1.0\bin\Release\x64;F:\Projects\Ymir\shared\SDL2\lib\x64;$(ExcludePath)</ExcludePath>
+    <IncludePath>E:\Projects\Ymir\shared\SDL2\include;E:\Projects\Ymir\shared\glew-2.1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\Projects\Ymir\shared\glew-2.1.0\lib\Release\x64;E:\Projects\Ymir\shared\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <ExcludePath>$(ExcludePath)</ExcludePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>F:\Projects\Ymir\shared\SDL2\include;F:\Projects\Ymir\shared\glew-2.1.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>F:\Projects\Ymir\shared\glew-2.1.0\lib\Release\x64;F:\Projects\Ymir\shared\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
-    <ExcludePath>F:\Projects\Ymir\shared\glew-2.1.0\bin\Release\x64;F:\Projects\Ymir\shared\SDL2\lib\x64;$(ExcludePath)</ExcludePath>
+    <IncludePath>E:\Projects\Ymir\shared\SDL2\include;E:\Projects\Ymir\shared\glew-2.1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\Projects\Ymir\shared\glew-2.1.0\lib\Release\x64;E:\Projects\Ymir\shared\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <ExcludePath>$(ExcludePath)</ExcludePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -107,6 +107,9 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -138,6 +141,9 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>glew32.lib;opengl32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp" />
