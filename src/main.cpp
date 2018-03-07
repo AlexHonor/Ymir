@@ -10,6 +10,13 @@
 #include <string>
 #include <memory>
 
+#include <VertexBuffer.h>
+#include <IndexBuffer.h>
+#include <Layout.h>
+#include <VertexArrayBuffer.h>
+#include <Shader.h>
+
+
 using std::cout;
 using std::endl;
 using std::string;
@@ -66,6 +73,70 @@ int main(int argc, char *argv[]) {
 
     bool loop_active = true;
 
+
+	// Testing VAOs, VBOs, EBOs
+
+	float dataUpperTriangle[] =
+	{   // position        color
+		-0.5f, -0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f,  0.5f, 0.0f, 1.0f, 0.0f,
+		0.5f,  0.0f, 0.0f, 0.0f, 1.0f,
+	};
+
+	float dataCoordLowerSquare[] =
+	{ // position
+		-0.5f,  0.0f, 0.0f, 0.0f, 1.0f,
+		0.5f,  0.0f, 1.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 1.0f, 0.0f, 1.0f
+	};
+
+
+	unsigned int indices[] = {
+		0, 1, 2,
+		0, 3, 2
+	};
+
+
+	/* TODO:
+
+	All next code has to be in Mesh
+
+	something like this
+	Mesh.Init(std::vector<pair<const VertexBuffer&, const Layout&>> );
+
+	Write function in VertexArray AddAttributes(vector<VertexBuffer>, Layout)
+	to use different arrays for attributes
+	*/
+
+	/////////////////////////////////////////////////////////////////////////////
+	// Creating VBO
+	VertexBuffer triangle1VBO(dataUpperTriangle, sizeof(dataUpperTriangle));
+	VertexBuffer squareCoordVBO(dataCoordLowerSquare, sizeof(dataCoordLowerSquare));
+
+	//Creating VAO
+	VertexArray uppertriangleVAO;
+	VertexArray lowersquareVAO;
+
+	//Creating EBO
+	IndexBuffer squareEBO(indices, 6);
+
+	//Adding attributes
+	Layout layout;
+	layout.Push<float>(2);
+	layout.Push<float>(3);
+	uppertriangleVAO.AddAttributes(triangle1VBO, layout);
+	lowersquareVAO.AddAttributes(squareCoordVBO, layout);
+
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	std::unordered_map<GLenum, std::string> shaders;
+	shaders[GL_VERTEX_SHADER] = std::string("shaders/vertex.glsl");
+	shaders[GL_FRAGMENT_SHADER] = std::string("shaders/fragment.glsl");
+	Shader shader(shaders);
+	shader.RunShader();
+
     while (loop_active) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -81,8 +152,14 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        glClearColor(0, 0, 1, 1);
+        glClearColor(0, 0.5, 0.5, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		uppertriangleVAO.Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		lowersquareVAO.Bind();
+		squareEBO.Bind();
+		glDrawElements(GL_TRIANGLES, squareEBO.GetCount(), GL_UNSIGNED_INT, 0);
 
         SDL_GL_SwapWindow(window);
     }
