@@ -1,3 +1,0 @@
-﻿  main.cpp
-c:\program files (x86)\microsoft visual studio\2017\enterprise\vc\tools\msvc\14.12.25827\include\xlocale(313): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
-  Ymir.vcxproj -> E:\Projects\Ymir\Ymir\x64\Debug\Ymir.exe
