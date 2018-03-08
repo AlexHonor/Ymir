@@ -75,15 +75,15 @@ int main(int argc, char *argv[]) {
 	// Testing VAOs, VBOs, EBOs
 
 	float cube[] = {
-		-0.5f, -0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f,  0.5f,
-		-0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
 
-		0.5f, -0.5f, -0.5f,
-		0.5f,  0.5f, -0.5f,
-		0.5f,  0.5f,  0.5f,
-		0.5f, -0.5f,  0.5f,
+		0.5f, -0.5f, -0.5f,  1.0f, 1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  0.5f, 0.3f, 0.2f,
+		0.5f, -0.5f,  0.5f,  0.0f, 0.5f, 0.5f
 	};
 
 	unsigned int indices[] = {
@@ -110,6 +110,8 @@ int main(int argc, char *argv[]) {
 
 	Layout layout;
 	layout.Push(RegisterAttrib::AttribTypeTable().GetAttribute("pos"));
+	layout.Push(RegisterAttrib::AttribTypeTable().GetAttribute("color"));
+
 
 
 	VertexBuffer cubeVBO(cube, sizeof(cube));
