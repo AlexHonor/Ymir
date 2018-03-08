@@ -22,6 +22,7 @@
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\RegisterAttrib.cpp" />
     <ClCompile Include="src\VertexArrayBuffer.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
   </ItemGroup>
@@ -30,6 +31,8 @@
     <None Include="shaders\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Attribute.h" />
+    <ClInclude Include="include\RegisterAttrib.h" />
     <ClInclude Include="include\IndexBuffer.h" />
     <ClInclude Include="include\Layout.h" />
     <ClInclude Include="include\Shader.h" />

@@ -1,6 +1,7 @@
 ﻿  VertexBuffer.cpp
   VertexArrayBuffer.cpp
 d:\project\ymir\ymir\src\vertexarraybuffer.cpp(39): warning C4312: 'type cast': conversion from 'unsigned int' to 'const void *' of greater size
+  RegisterAttrib.cpp
   Shader.cpp
   main.cpp
   IndexBuffer.cpp

@@ -3,18 +3,15 @@
 	Contact: berserk323@yandex.ru
 */
 
-#include <GL/glew.h>
 #include <SDL.h>
 
 #include <iostream>
 #include <string>
 #include <memory>
 
-#include <VertexBuffer.h>
-#include <IndexBuffer.h>
-#include <Layout.h>
 #include <VertexArrayBuffer.h>
 #include <Shader.h>
+#include <RegisterAttrib.h>
 
 
 using std::cout;
@@ -98,38 +95,25 @@ int main(int argc, char *argv[]) {
 	};
 
 
-	/* TODO:
+	/* TEST */
 
-	All next code has to be in Mesh
+	
+	// Filling awesome table
+	//													Имя	    Тип	Сколько Нормал СлотVAO
+	RegisterAttrib::AttribTypeTable().AddAttribute("pos", GL_FLOAT, 2, GL_FALSE, 0);
+	RegisterAttrib::AttribTypeTable().AddAttribute("color", GL_FLOAT, 3, GL_FALSE, 3);
 
-	something like this
-	Mesh.Init(std::vector<pair<const VertexBuffer&, const Layout&>> );
-
-	Write function in VertexArray AddAttributes(vector<VertexBuffer>, Layout)
-	to use different arrays for attributes
-	*/
-
-	/////////////////////////////////////////////////////////////////////////////
-	// Creating VBO
-	VertexBuffer triangle1VBO(dataUpperTriangle, sizeof(dataUpperTriangle));
-	VertexBuffer squareCoordVBO(dataCoordLowerSquare, sizeof(dataCoordLowerSquare));
-
-	//Creating VAO
-	VertexArray uppertriangleVAO;
-	VertexArray lowersquareVAO;
-
-	//Creating EBO
-	IndexBuffer squareEBO(indices, 6);
-
-	//Adding attributes
 	Layout layout;
-	layout.Push<float>(2);
-	layout.Push<float>(3);
-	uppertriangleVAO.AddAttributes(triangle1VBO, layout);
-	lowersquareVAO.AddAttributes(squareCoordVBO, layout);
+	layout.Push(RegisterAttrib::AttribTypeTable().GetAttribute("pos"));
+	layout.Push(RegisterAttrib::AttribTypeTable().GetAttribute("color"));
+
+	VertexBuffer uppertriangleVBO(dataUpperTriangle, sizeof(dataUpperTriangle));
+	VertexArray uppertriangleVAO;
+	uppertriangleVAO.AddAttributes(uppertriangleVBO, layout);
 
 
-	///////////////////////////////////////////////////////////////////////////////////
+
+
 
 	std::unordered_map<GLenum, std::string> shaders;
 	shaders[GL_VERTEX_SHADER] = std::string("shaders/vertex.glsl");
@@ -157,9 +141,6 @@ int main(int argc, char *argv[]) {
 
 		uppertriangleVAO.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		lowersquareVAO.Bind();
-		squareEBO.Bind();
-		glDrawElements(GL_TRIANGLES, squareEBO.GetCount(), GL_UNSIGNED_INT, 0);
 
         SDL_GL_SwapWindow(window);
     }
@@ -168,6 +149,5 @@ int main(int argc, char *argv[]) {
     SDL_GL_DeleteContext(ctx);
     SDL_DestroyWindow(window);
     SDL_Quit();
-
     return 0;
 }

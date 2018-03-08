@@ -8,8 +8,6 @@
 
 // Same as VertexBuffer
 class IndexBuffer {
-	unsigned int vibID;
-	unsigned int indexCount;
  public:
  	// count = number ( not bytes )
  	IndexBuffer(const unsigned int* data,unsigned int count);
@@ -17,4 +15,8 @@ class IndexBuffer {
  	void Bind() const;
  	void Unbind() const;
  	unsigned int GetCount() const;
+
+private:
+	unsigned int vibID;
+	unsigned int indexCount;
 };

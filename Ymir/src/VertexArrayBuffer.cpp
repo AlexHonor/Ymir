@@ -6,7 +6,7 @@
 #include "VertexArrayBuffer.h"
 
 
-VertexArray::VertexArray(): freeAttribNumber(0) {
+VertexArray::VertexArray() {
 	glGenVertexArrays(1, &vaoID);
 }
 
@@ -29,15 +29,14 @@ void VertexArray::Unbind() const {
 void VertexArray::AddAttributes(const VertexBuffer& vb, const Layout& layout) {
 	Bind();
 	vb.Bind();
-	const std::vector<VB_Element> elements = layout.GetElements();
+	attributes = layout.GetElements();
 	unsigned int offset = 0;
-	for (unsigned int i = 0; i < elements.size(); i++) {
-		VB_Element element = elements[i];
-		glEnableVertexAttribArray(i);
-		glVertexAttribPointer(i, element.count, element.type, 
-							  element.normalized, layout.GetStride(),
+	
+	for (auto it = attributes.begin(); it != attributes.end(); it++) {
+		glEnableVertexAttribArray(it->slot);
+		glVertexAttribPointer(it->slot, it->count, it->type,
+							  it->normalized, layout.GetStride(),
 							  (const void *) offset);
-		offset = element.count * VB_Element::GetSizeOfType(element.type);
+		offset = it->count * Attribute::GetSizeOfType(it->type);
 	}
-	freeAttribNumber += static_cast<unsigned int>(elements.size());
 }

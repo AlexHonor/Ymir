@@ -9,11 +9,12 @@
 // Basic VBO class just generation and binding
 
 class VertexBuffer {
-	unsigned int vboID;
  public:
  	// size = number of bytes
  	VertexBuffer(const void* data, unsigned int size);
  	~VertexBuffer();
  	void Bind() const;
  	void Unbind() const;
+ private:
+	unsigned int vboID;
 };

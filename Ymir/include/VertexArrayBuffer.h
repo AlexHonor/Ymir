@@ -9,12 +9,15 @@
 #include "Layout.h"
 
 class VertexArray {
-	unsigned int vaoID;
-	unsigned int freeAttribNumber;
  public:
+	std::vector<Attribute> attributes;
  	VertexArray();
  	~VertexArray();
  	void Bind() const;
  	void Unbind() const;
  	void AddAttributes(const VertexBuffer& vb, const Layout& layout);
+ private:
+	unsigned int vaoID;
+	
+
 };
