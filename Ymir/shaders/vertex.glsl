@@ -1,12 +1,10 @@
 #version 330 core
 
-layout (location = 0) in vec2 position;
-layout (location = 3) in vec3 in_color;
+layout (location = 0) in vec3 position;
 
-out vec3 out_color;
+uniform mat4 MVP;
 
 void main()
 {
-    gl_Position = vec4(position.x, position.y, 0.0f, 1.0f);
-	out_color = in_color;
+    gl_Position = MVP*vec4(position, 1.0f);
 }
