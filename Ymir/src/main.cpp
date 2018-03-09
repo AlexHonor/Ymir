@@ -3,8 +3,6 @@
 	Contact: berserk323@yandex.ru
 */
 
-#include <SDL.h>
-
 #include <iostream>
 #include <string>
 #include <memory>
@@ -12,6 +10,7 @@
 #include <VertexArrayBuffer.h>
 #include <Shader.h>
 #include <RegisterAttrib.h>
+#include <Controller.h>
 
 
 using std::cout;
@@ -24,6 +23,7 @@ enum RetErrorCodes {
     GL_CONTEXT_CREATION_FAIL,
     GLEW_INIT_FAIL
 };
+
 
 
 int main(int argc, char *argv[]) {
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 
 	
 	// Filling awesome table
-	//													Имя	 Тип Сколько Нормал СлотVAO
+	//												Имя	    Тип Сколько Нормал СлотVAO
 	RegisterAttrib::AttribTypeTable().AddAttribute("pos", GL_FLOAT, 3, GL_FALSE, 0);
 	RegisterAttrib::AttribTypeTable().AddAttribute("color", GL_FLOAT, 3, GL_FALSE, 3);
 
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
 	VertexArray cubeVAO;
 	IndexBuffer cubeEBO(indices, 36);
 	cubeVAO.AddAttributes(cubeVBO, layout);
-
+	//
 
 
 
@@ -133,7 +133,21 @@ int main(int argc, char *argv[]) {
 
 	glEnable(GL_DEPTH_TEST);
 	float angle = 0.0f;
+
+	Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
+
+	Uint32 elapsedTime = 0;
+	Uint32 lastFrameTimeElapsed = 0;
+
+	//Convert Uint32 milliseconds to float seconds
+	
+
     while (loop_active) {
+		elapsedTime = SDL_GetTicks();
+		float deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.001; //Per-second is easy
+		lastFrameTimeElapsed = elapsedTime;
+		Controller::CallController().MoveCamera(camera, deltaTime);
+
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -151,9 +165,7 @@ int main(int argc, char *argv[]) {
 		glClearColor(0.1, 0.1, 0.1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glm::mat4 projection, view, model;
-		view = glm::lookAt(glm::vec3(0.0f, 0.0f, 5.0f),
-						   glm::vec3(0.0f, 0.0f, 0.0f),
-						   glm::vec3(0.0f, 1.0f, 0.0f));
+		view = camera.GetViewMatrix();
 		projection = glm::perspective(glm::radians(45.0f), static_cast<float>(DEFAULT_WIDTH) / static_cast<float>(DEFAULT_HEIGHT), 0.1f, 200.0f);
 		model = glm::rotate(glm::mat4(1.0f),glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 		glm::mat4 mvp = projection * view * model;
