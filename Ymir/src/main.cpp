@@ -6,16 +6,17 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 #include <VertexArrayBuffer.h>
-#include <Shader.h>
+#include <Program.h>
 #include <RegisterAttrib.h>
 #include <Controller.h>
-
 
 using std::cout;
 using std::endl;
 using std::string;
+using std::unordered_map;
 
 enum RetErrorCodes {
     SDL_INIT_FAIL,
@@ -51,6 +52,9 @@ int main(int argc, char *argv[]) {
                      SDL_GetError());
         return WINDOW_CREATION_FAIL;
     }
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
     SDL_GLContext ctx = SDL_GL_CreateContext(window);
 
@@ -103,6 +107,7 @@ int main(int argc, char *argv[]) {
 	
 
 	
+    
 	// Filling awesome table
 	//												Имя	    Тип Сколько Нормал СлотVAO
 	RegisterAttrib::AttribTypeTable().AddAttribute("pos", GL_FLOAT, 3, GL_FALSE, 0);
@@ -123,14 +128,14 @@ int main(int argc, char *argv[]) {
 
 
 
-	std::unordered_map<GLenum, std::string> shaders;
-	shaders[GL_VERTEX_SHADER] = std::string("shaders/vertex.glsl");
-	shaders[GL_FRAGMENT_SHADER] = std::string("shaders/fragment.glsl");
-	Shader shader(shaders);
-	shader.RunShader();
+	unordered_map<GLenum, string> shaders;
+	shaders[GL_VERTEX_SHADER] = string("shaders/vertex.glsl");
+	shaders[GL_FRAGMENT_SHADER] = string("shaders/fragment.glsl");
+	Program shader(shaders);
+	shader.Use();
 
 
-
+   
 	glEnable(GL_DEPTH_TEST);
 	float angle = 0.0f;
 
@@ -164,13 +169,19 @@ int main(int argc, char *argv[]) {
 		angle += 0.5f;
 		glClearColor(0.1, 0.1, 0.1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glm::mat4 projection, view, model;
-		view = camera.GetViewMatrix();
-		projection = glm::perspective(glm::radians(45.0f), static_cast<float>(DEFAULT_WIDTH) / static_cast<float>(DEFAULT_HEIGHT), 0.1f, 200.0f);
-		model = glm::rotate(glm::mat4(1.0f),glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-		glm::mat4 mvp = projection * view * model;
+		
+        glm::mat4 projection, view, model;
+		
+        //Frame context
+        view = camera.GetViewMatrix();
+        projection = glm::perspective(glm::radians(45.0f), static_cast<float>(DEFAULT_WIDTH) / static_cast<float>(DEFAULT_HEIGHT), 0.1f, 200.0f);
 
-		shader.SetUniform("MVP", mvp);
+        //Mesh info
+        model = glm::rotate(glm::mat4(1.0f),glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		
+        glm::mat4 mvp = projection * view * model;
+
+		shader.TrySetUniform("MVP", mvp);
 
 		cubeVAO.Bind();
 		cubeEBO.Bind();

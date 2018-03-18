@@ -1,5 +1,5 @@
 /*
-	Copyright 2018 Gorbonosov Alexey & Borzov Sergey
+	Copyright 2018 /2 /1 & Borzov Sergey
 	Contact: berserk323@yandex.ru
 */
 
