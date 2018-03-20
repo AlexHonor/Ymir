@@ -1,7 +1,7 @@
 #version 330 core
 
-layout (location = 0) in vec3 position;
-layout (location = 3) in vec3 color;
+in vec3 position;
+in vec3 color;
 
 uniform mat4 MVP;
 out vec3 out_color;

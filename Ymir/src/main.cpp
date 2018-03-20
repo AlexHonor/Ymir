@@ -8,6 +8,7 @@
 #include <memory>
 #include <unordered_map>
 
+#include <Utility.h>
 #include <VertexArrayBuffer.h>
 #include <Program.h>
 #include <RegisterAttrib.h>
@@ -129,12 +130,12 @@ int main(int argc, char *argv[]) {
 
 
 	unordered_map<GLenum, string> shaders;
-	shaders[GL_VERTEX_SHADER] = string("shaders/vertex.glsl");
-	shaders[GL_FRAGMENT_SHADER] = string("shaders/fragment.glsl");
+	shaders[GL_VERTEX_SHADER] = ReadFile("shaders/vertex.glsl");
+	shaders[GL_FRAGMENT_SHADER] = ReadFile("shaders/fragment.glsl");
 	Program shader(shaders);
 	shader.Use();
 
-
+    cout << "Shader uniforms: " << shader.DebugListUniforms() << endl;
    
 	glEnable(GL_DEPTH_TEST);
 	float angle = 0.0f;
@@ -181,7 +182,7 @@ int main(int argc, char *argv[]) {
 		
         glm::mat4 mvp = projection * view * model;
 
-		shader.TrySetUniform("MVP", mvp);
+		shader.SetUniform("MVP", mvp);
 
 		cubeVAO.Bind();
 		cubeEBO.Bind();
@@ -190,6 +191,7 @@ int main(int argc, char *argv[]) {
         SDL_GL_SwapWindow(window);
     }
     SDL_GL_DeleteContext(ctx);
+    //  Error: Crashes below on quit
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;

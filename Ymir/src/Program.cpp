@@ -1,4 +1,4 @@
-#include "Program.h"
+#include <Program.h>
 
 Program::Program() {}
 
@@ -50,6 +50,8 @@ bool Program::BuildFromSource(const unordered_map<GLenum, string> &src) {
         // Report errors
     }
 
+    BuildUniformTable();
+
     for (auto &shader : shaders) {
         Detach(shader.second);
     }
@@ -58,22 +60,26 @@ bool Program::BuildFromSource(const unordered_map<GLenum, string> &src) {
 }
 
 void Program::BindAttributeLocations() {
-//    glBindAttribLocation(res, VertexAttribute::POSITION , "a_position" ); 
+    auto &attribTable = RegisterAttrib::AttribTypeTable().GetTable();
+
+    for (auto &attrib : attribTable) {
+        glBindAttribLocation(res, attrib.second.slot, attrib.first.c_str());
+    }
 }
 
-bool Program::TrySetUniform(string name, glm::mat4x4 mat) const {
-    GLuint location = glGetUniformLocation(res, name.c_str()); 
+bool Program::SetUniform(const string &name, const glm::mat4x4 &mat) const {
+    auto uniform = uniforms.find(name);
     
-    if (location != -1) {
+    if (uniform != uniforms.end()) {
         Use(); 
-        glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
+        glUniformMatrix4fv(uniform->second.slot, 1, GL_FALSE, &mat[0][0]);
         return true;
     } else {
         return false;
     }
 }
 
-bool Program::TrySetUniform(string name, glm::mat3x3 mat) const {
+bool Program::SetUniform(string name, glm::mat3x3 mat) const {
     GLuint location = glGetUniformLocation(res, name.c_str()); 
     
     if (location != -1) {
@@ -85,7 +91,7 @@ bool Program::TrySetUniform(string name, glm::mat3x3 mat) const {
     }
 }
 
-bool Program::TrySetUniform(string name, GLuint val) const {
+bool Program::SetUniform(string name, GLuint val) const {
     GLuint location = glGetUniformLocation(res, name.c_str()); 
     
     if (location != -1) {
@@ -102,6 +108,39 @@ bool Program::IsValid() const {
     return is_valid;
 }
 
+bool Program::BuildUniformTable() {
+    GLint count;
+    glGetProgramiv(res, GL_ACTIVE_UNIFORMS, &count);
+    
+    for (int id = 0; id < count; id++) {
+        const size_t BUF_SIZE = 256;
+        char name[BUF_SIZE];
+        
+        GLenum type;
+        GLsizei size = 0;
+        GLsizei length = 0;
+        glGetActiveUniform(res, id, BUF_SIZE, &length, &size, &type, name);
+
+        uniforms[name].size = size;
+        uniforms[name].type = type;
+        uniforms[name].slot = glGetUniformLocation(res, name);
+    }
+    return true;
+}
+
+string Program::DebugListUniforms() const {
+    stringstream ss;
+    ss << "[";
+    for (auto &uniform : uniforms) {
+        ss << " { Name: " << uniform.first;
+        ss << " Type: " << uniform.second.type;
+        ss << " Slot: " << uniform.second.slot;
+        ss << " Size: " << uniform.second.size << " }";
+    }
+    ss << "]";
+    return ss.str();
+}
+
 void Program::Attach(const Shader &shader) const {
 	glAttachShader(res, shader.res); 
 }
@@ -110,5 +149,5 @@ void Program::Detach(const Shader &shader) const {
 }
 
 Program::~Program() {
-	
+    glDeleteProgram(res);
 }

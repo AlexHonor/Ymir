@@ -24,3 +24,7 @@ const Attribute RegisterAttrib::GetAttribute(std::string name){
 	cout << " No AttributeType " << name << " was found. " << endl;
 	return Attribute();
 }
+
+const std::unordered_map <std::string, Attribute> RegisterAttrib::GetTable() const {
+    return table;
+}
