@@ -72,5 +72,8 @@
     <ClInclude Include="include\Controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,13 +2,7 @@
 	Copyright 2018 Gorbonosov Alexey & Borzov Sergey
 	Contact: berserk323@yandex.ru
 */
-
 #pragma once
-/*
-	Copyright 2018 Gorbonosov Alexey & Borzov Sergey
-	Contact: berserk323@yandex.ru
-*/
-
 #pragma once
 #include <vector>
 #include <unordered_map>

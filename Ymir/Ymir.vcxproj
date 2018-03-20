@@ -36,6 +36,7 @@
     <ClInclude Include="include\Attribute.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Controller.h" />
+    <ClInclude Include="include\Loader.h" />
     <ClInclude Include="include\RegisterAttrib.h" />
     <ClInclude Include="include\IndexBuffer.h" />
     <ClInclude Include="include\Layout.h" />

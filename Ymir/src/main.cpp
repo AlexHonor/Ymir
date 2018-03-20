@@ -138,16 +138,13 @@ int main(int argc, char *argv[]) {
 
 	Uint32 elapsedTime = 0;
 	Uint32 lastFrameTimeElapsed = 0;
-
-	//Convert Uint32 milliseconds to float seconds
 	
 
     while (loop_active) {
 		elapsedTime = SDL_GetTicks();
-		float deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.001; //Per-second is easy
+		float deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.001;
 		lastFrameTimeElapsed = elapsedTime;
 		Controller::CallController().MoveCamera(camera, deltaTime);
-
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
