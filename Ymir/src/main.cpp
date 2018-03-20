@@ -6,16 +6,18 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
+#include <Utility.h>
 #include <VertexArrayBuffer.h>
-#include <Shader.h>
+#include <Program.h>
 #include <RegisterAttrib.h>
 #include <Controller.h>
-
 
 using std::cout;
 using std::endl;
 using std::string;
+using std::unordered_map;
 
 enum RetErrorCodes {
     SDL_INIT_FAIL,
@@ -51,6 +53,9 @@ int main(int argc, char *argv[]) {
                      SDL_GetError());
         return WINDOW_CREATION_FAIL;
     }
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
     SDL_GLContext ctx = SDL_GL_CreateContext(window);
 
@@ -103,6 +108,7 @@ int main(int argc, char *argv[]) {
 	
 
 	
+    
 	// Filling awesome table
 	//												Имя	    Тип Сколько Нормал СлотVAO
 	RegisterAttrib::AttribTypeTable().AddAttribute("pos", GL_FLOAT, 3, GL_FALSE, 0);
@@ -123,14 +129,14 @@ int main(int argc, char *argv[]) {
 
 
 
-	std::unordered_map<GLenum, std::string> shaders;
-	shaders[GL_VERTEX_SHADER] = std::string("shaders/vertex.glsl");
-	shaders[GL_FRAGMENT_SHADER] = std::string("shaders/fragment.glsl");
-	Shader shader(shaders);
-	shader.RunShader();
+	unordered_map<GLenum, string> shaders;
+	shaders[GL_VERTEX_SHADER] = ReadFile("shaders/vertex.glsl");
+	shaders[GL_FRAGMENT_SHADER] = ReadFile("shaders/fragment.glsl");
+	Program shader(shaders);
+	shader.Use();
 
-
-
+    cout << "Shader uniforms: " << shader.DebugListUniforms() << endl;
+   
 	glEnable(GL_DEPTH_TEST);
 	float angle = 0.0f;
 
@@ -138,13 +144,16 @@ int main(int argc, char *argv[]) {
 
 	Uint32 elapsedTime = 0;
 	Uint32 lastFrameTimeElapsed = 0;
+
+	//Convert Uint32 milliseconds to float seconds
 	
 
     while (loop_active) {
 		elapsedTime = SDL_GetTicks();
-		float deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.001;
+		float deltaTime = (elapsedTime - lastFrameTimeElapsed) * 0.001; //Per-second is easy
 		lastFrameTimeElapsed = elapsedTime;
 		Controller::CallController().MoveCamera(camera, deltaTime);
+
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -161,11 +170,17 @@ int main(int argc, char *argv[]) {
 		angle += 0.5f;
 		glClearColor(0.1, 0.1, 0.1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glm::mat4 projection, view, model;
-		view = camera.GetViewMatrix();
-		projection = glm::perspective(glm::radians(45.0f), static_cast<float>(DEFAULT_WIDTH) / static_cast<float>(DEFAULT_HEIGHT), 0.1f, 200.0f);
-		model = glm::rotate(glm::mat4(1.0f),glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-		glm::mat4 mvp = projection * view * model;
+		
+        glm::mat4 projection, view, model;
+		
+        //Frame context
+        view = camera.GetViewMatrix();
+        projection = glm::perspective(glm::radians(45.0f), static_cast<float>(DEFAULT_WIDTH) / static_cast<float>(DEFAULT_HEIGHT), 0.1f, 200.0f);
+
+        //Mesh info
+        model = glm::rotate(glm::mat4(1.0f),glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		
+        glm::mat4 mvp = projection * view * model;
 
 		shader.SetUniform("MVP", mvp);
 
@@ -176,6 +191,7 @@ int main(int argc, char *argv[]) {
         SDL_GL_SwapWindow(window);
     }
     SDL_GL_DeleteContext(ctx);
+    //  Error: Crashes below on quit
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
